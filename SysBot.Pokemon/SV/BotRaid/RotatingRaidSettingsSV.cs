@@ -368,6 +368,10 @@ namespace SysBot.Pokemon
             [DisplayName("Include Type Advantage Hints in Embed?")]
             public bool IncludeTypeAdvantage { get; set; } = true;
 
+            [Category(Hosting), Description("If true, the bot will show Raid Mechanics for 7 Star raids in embeds.")]
+            [DisplayName("Include Raid Mechanics in Embed?")]
+            public bool IncludeRaidMechanics { get; set; } = true;
+
             [Category(Hosting), Description("If true, the bot will show Special Rewards on embeds.")]
             [DisplayName("Include Rewards in Embed?")]
             public bool IncludeRewards { get; set; } = true;
