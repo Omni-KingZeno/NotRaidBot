@@ -1,18 +1,18 @@
-﻿using Newtonsoft.Json;
-using SysBot.Pokemon.SV.BotRaid.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using SysBot.Pokemon.SV.BotRaid.Helpers;
 
 namespace SysBot.Pokemon.WinForms
 {
     public class UpdateChecker
     {
-        private const string RepositoryOwner = "bdawg1989";
-        private const string RepositoryName = "SVRaidBot";
+        private const string RepositoryOwner = "BakaKaito";
+        private const string RepositoryName = "NotRaidBot";
 
         public static async Task<(bool UpdateAvailable, bool UpdateRequired, string NewVersion)> CheckForUpdatesAsync(bool forceShow = false)
         {
@@ -49,7 +49,7 @@ namespace SysBot.Pokemon.WinForms
         public static async Task<string?> FetchDownloadUrlAsync()
         {
             ReleaseInfo? latestRelease = await FetchLatestReleaseAsync();
-            if (latestRelease?.Assets == null || !latestRelease.Assets.Any())
+            if (latestRelease?.Assets == null || latestRelease.Assets.Count == 0)
             {
                 Console.WriteLine("No assets found in the release");
                 return null;

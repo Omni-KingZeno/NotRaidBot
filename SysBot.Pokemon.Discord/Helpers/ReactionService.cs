@@ -1,8 +1,8 @@
-﻿using Discord;
-using Discord.WebSocket;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Discord;
+using Discord.WebSocket;
 
 namespace SysBot.Pokemon.Discord.Helpers
 {

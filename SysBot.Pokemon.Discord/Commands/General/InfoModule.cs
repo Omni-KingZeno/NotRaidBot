@@ -1,11 +1,11 @@
-﻿using Discord;
-using Discord.Commands;
-using SysBot.Pokemon.SV.BotRaid.Helpers;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using SysBot.Pokemon.SV.BotRaid.Helpers;
 
 namespace SysBot.Pokemon.Discord
 {
@@ -17,19 +17,13 @@ namespace SysBot.Pokemon.Discord
         private const string detail = "I am an Open Source RaidBot powered by PKHeX.Core and other open-source software.";
         public const string version = SVRaidBot.Version;
         private const string support = SVRaidBot.Repo;
-        private const ulong DisallowedUserId = 195756980873199618;
 
         [Command("info")]
         [Alias("about", "whoami", "owner")]
         public async Task InfoAsync()
         {
-            if (Context.User.Id == DisallowedUserId)
-            {
-                await ReplyAsync("We don't let shady people use this command.").ConfigureAwait(false);
-                return;
-            }
             var app = await Context.Client.GetApplicationInfoAsync().ConfigureAwait(false);
-            var programIconUrl = "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/icon4.png";
+            var programIconUrl = "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/pawmichu.png";
             var builder = new EmbedBuilder
             {
                 Color = new Color(114, 137, 218),
@@ -38,8 +32,7 @@ namespace SysBot.Pokemon.Discord
             };
 
             builder.AddField("# __Bot Info__",
-                $"- **Version**: {version}\n" +
-                $"- [Download SVRaidBot]({support})\n- [Join Our Discord!](https://notpaldea.net)\n" +
+                $"- {Format.Bold("Version")}: {version}\n" +
                 $"- {Format.Bold("Owner")}: {app.Owner} ({app.Owner.Id})\n" +
                 $"- {Format.Bold("Uptime")}: {GetUptime()}\n" +
                 $"- {Format.Bold("Core Version")}: {GetVersionInfo("PKHeX.Core")}\n" +
@@ -49,8 +42,7 @@ namespace SysBot.Pokemon.Discord
             builder.AddField("Stats",
                 $"- {Format.Bold("Guilds")}: {Context.Client.Guilds.Count}\n" +
                 $"- {Format.Bold("Channels")}: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
-                $"- {Format.Bold("Users")}: {Context.Client.Guilds.Sum(g => g.MemberCount)}\n" +
-                $"{Format.Bold($"\nVisit [NotPaldea.net]({support}) for more information.")}\n"
+                $"- {Format.Bold("Users")}: {Context.Client.Guilds.Sum(g => g.MemberCount)}\n"
                 );
 
             await ReplyAsync("Here's a bit about me!", embed: builder.Build()).ConfigureAwait(false);

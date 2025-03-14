@@ -1,8 +1,8 @@
-﻿using SysBot.Base;
-using SysBot.Pokemon.SV;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SysBot.Base;
+using SysBot.Pokemon.SV;
 
 namespace SysBot.Pokemon
 {

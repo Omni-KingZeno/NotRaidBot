@@ -1,10 +1,10 @@
-﻿using NLog;
-using NLog.Config;
-using NLog.Targets;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace SysBot.Base
 {
@@ -70,9 +70,7 @@ namespace SysBot.Base
                 {
                     fwd(message, identity);
                 }
-#pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception ex)
-#pragma warning restore CA1031 // Do not catch general exception types
                 {
                     Logger.Log(LogLevel.Error, $"Failed to forward log from {identity} - {message}");
                     Logger.Log(LogLevel.Error, ex);

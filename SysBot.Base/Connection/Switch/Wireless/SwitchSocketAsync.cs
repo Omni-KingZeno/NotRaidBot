@@ -103,11 +103,11 @@ namespace SysBot.Base
             if (!Connected)
             {
                 Log("Connection lost. Attempting to reconnect...");
-                await RetryOperation(async (ct) =>
+                await RetryOperation((ct) =>
                 {
                     Reset();
                     Connect();
-                    return true;
+                    return Task.FromResult(true);
                 }, token);
             }
         }

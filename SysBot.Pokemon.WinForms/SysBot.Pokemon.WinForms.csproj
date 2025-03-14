@@ -15,11 +15,12 @@
     <Version>01.00.00</Version>
     <Platforms>x64</Platforms>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <Configurations>Debug;Release;sysbottest</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <SignAssembly>False</SignAssembly>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyFile></AssemblyOriginatorKeyFile>
+    <NoWarn>CS8618,CS8602,CS8622</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebugType>none</DebugType>
@@ -55,13 +56,5 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\SysBot.Pokemon\deps\PKHeX.Core.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\SysBot.Pokemon\deps\RaidCrawler.Core.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 </Project>

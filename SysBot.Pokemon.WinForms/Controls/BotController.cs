@@ -1,9 +1,9 @@
-﻿using SysBot.Base;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using SysBot.Base;
 
 namespace SysBot.Pokemon.WinForms
 {

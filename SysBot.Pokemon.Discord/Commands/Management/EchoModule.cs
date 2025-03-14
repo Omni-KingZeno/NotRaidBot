@@ -1,40 +1,17 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using SysBot.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using SysBot.Base;
 
 namespace SysBot.Pokemon.Discord
 {
-    public static class EmbedColorConverter
-    {
-        public static Color ToDiscordColor(this EmbedColorOption colorOption)
-        {
-            return colorOption switch
-            {
-                EmbedColorOption.Blue => Color.Blue,
-                EmbedColorOption.Green => Color.Green,
-                EmbedColorOption.Red => Color.Red,
-                EmbedColorOption.Gold => Color.Gold,
-                EmbedColorOption.Purple => Color.Purple,
-                EmbedColorOption.Teal => Color.Teal,
-                EmbedColorOption.Orange => Color.Orange,
-                EmbedColorOption.Magenta => Color.Magenta,
-                EmbedColorOption.LightGrey => Color.LightGrey,
-                EmbedColorOption.DarkGrey => Color.DarkGrey,
-                _ => Color.Blue,  // Default to Blue if somehow an undefined enum value is used
-            };
-        }
-    }
-
     public class EchoModule : ModuleBase<SocketCommandContext>
     {
-        private static DiscordSettings Settings { get; set; }
-
         private class EchoChannel
         {
             public readonly ulong ChannelID;
@@ -72,7 +49,6 @@ namespace SysBot.Pokemon.Discord
 
         public static void RestoreChannels(DiscordSocketClient discord, DiscordSettings cfg)
         {
-            Settings = cfg;
             foreach (var ch in cfg.EchoChannels)
             {
                 if (discord.GetChannel(ch.ID) is ISocketMessageChannel c)
@@ -89,8 +65,8 @@ namespace SysBot.Pokemon.Discord
         {
             var unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             var formattedTimestamp = $"<t:{unixTimestamp}:F>";
-            var embedColor = Settings.AnnouncementSettings.RandomAnnouncementColor ? GetRandomColor() : Settings.AnnouncementSettings.AnnouncementEmbedColor.ToDiscordColor();
-            var thumbnailUrl = Settings.AnnouncementSettings.RandomAnnouncementThumbnail ? GetRandomThumbnail() : GetSelectedThumbnail();
+            var embedColor = SysCordSettings.Settings.AnnouncementSettings.RandomAnnouncementColor ? GetRandomColor() : ToDiscordColor(SysCordSettings.Settings.AnnouncementSettings.AnnouncementEmbedColor);
+            var thumbnailUrl = GetThumbnail();
 
             var embedDescription = $"## {announcement}\n\n**Sent: {formattedTimestamp}**";
 
@@ -129,74 +105,38 @@ namespace SysBot.Pokemon.Discord
             await Context.Message.DeleteAsync().ConfigureAwait(false);
         }
 
-        private Color GetRandomColor()
+        private static Color GetRandomColor()
         {
             // Generate a random color
             var random = new Random();
             var colors = Enum.GetValues(typeof(EmbedColorOption)).Cast<EmbedColorOption>().ToList();
-            return colors[random.Next(colors.Count)].ToDiscordColor();
+            return ToDiscordColor(colors[random.Next(colors.Count)]);
         }
 
-        private string GetRandomThumbnail()
+        private static string GetThumbnail()
         {
-            // Define a list of available thumbnail URLs
-            var thumbnailOptions = new List<string>
-    {
-        "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/gengarmegaphone.png",
-        "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/pikachumegaphone.png",
-        "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/umbreonmegaphone.png",
-        "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/sylveonmegaphone.png",
-        "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/charmandermegaphone.png",
-        "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/jigglypuffmegaphone.png",
-        "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/flareonmegaphone.png",
-    };
-
-            // Generate a random index and return the corresponding URL
-            var random = new Random();
-            return thumbnailOptions[random.Next(thumbnailOptions.Count)];
-        }
-
-        private string GetSelectedThumbnail()
-        {
-            // Use the custom thumbnail URL if it's not empty; otherwise, use the selected option
-            if (!string.IsNullOrEmpty(Settings.AnnouncementSettings.CustomAnnouncementThumbnailUrl))
+            if (!string.IsNullOrEmpty(SysCordSettings.Settings.AnnouncementSettings.CustomAnnouncementThumbnailUrl))
             {
-                return Settings.AnnouncementSettings.CustomAnnouncementThumbnailUrl;
+                return SysCordSettings.Settings.AnnouncementSettings.CustomAnnouncementThumbnailUrl;
             }
-            else
+
+            var thumbnails = new Dictionary<ThumbnailOption, string>
             {
-                return GetUrlFromThumbnailOption(Settings.AnnouncementSettings.AnnouncementThumbnailOption);
-            }
-        }
+                { ThumbnailOption.Gengar,     "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/gengarmegaphone.png" },
+                { ThumbnailOption.Pikachu,    "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/pikachumegaphone.png" },
+                { ThumbnailOption.Umbreon,    "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/umbreonmegaphone.png" },
+                { ThumbnailOption.Sylveon,    "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/sylveonmegaphone.png" },
+                { ThumbnailOption.Charmander, "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/charmandermegaphone.png" },
+                { ThumbnailOption.Jigglypuff, "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/jigglypuffmegaphone.png" },
+                { ThumbnailOption.Flareon,    "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/flareonmegaphone.png" }
+            };
 
-        private string GetUrlFromThumbnailOption(ThumbnailOption option)
-        {
-            switch (option)
+            if (thumbnails.TryGetValue(SysCordSettings.Settings.AnnouncementSettings.AnnouncementThumbnailOption, out var url))
             {
-                case ThumbnailOption.Gengar:
-                    return "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/gengarmegaphone.png";
-
-                case ThumbnailOption.Pikachu:
-                    return "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/pikachumegaphone.png";
-
-                case ThumbnailOption.Umbreon:
-                    return "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/umbreonmegaphone.png";
-
-                case ThumbnailOption.Sylveon:
-                    return "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/sylveonmegaphone.png";
-
-                case ThumbnailOption.Charmander:
-                    return "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/charmandermegaphone.png";
-
-                case ThumbnailOption.Jigglypuff:
-                    return "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/jigglypuffmegaphone.png";
-
-                case ThumbnailOption.Flareon:
-                    return "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/flareonmegaphone.png";
-
-                default:
-                    return "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/gengarmegaphone.png";
+                return url;
             }
+
+            return thumbnails.Values.ElementAt(new Random().Next(thumbnails.Count));
         }
 
         [Command("addEmbedChannel")]
@@ -344,5 +284,23 @@ namespace SysBot.Pokemon.Discord
             Name = channel.Name,
             Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
         };
+
+        public static Color ToDiscordColor(EmbedColorOption colorOption)
+        {
+            return colorOption switch
+            {
+                EmbedColorOption.Blue => Color.Blue,
+                EmbedColorOption.Green => Color.Green,
+                EmbedColorOption.Red => Color.Red,
+                EmbedColorOption.Gold => Color.Gold,
+                EmbedColorOption.Purple => Color.Purple,
+                EmbedColorOption.Teal => Color.Teal,
+                EmbedColorOption.Orange => Color.Orange,
+                EmbedColorOption.Magenta => Color.Magenta,
+                EmbedColorOption.LightGrey => Color.LightGrey,
+                EmbedColorOption.DarkGrey => Color.DarkGrey,
+                _ => Color.Blue,  // Default to Blue if somehow an undefined enum value is used
+            };
+        }
     }
 }

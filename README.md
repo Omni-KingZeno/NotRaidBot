@@ -1,23 +1,11 @@
-# Sc/Vi RaidBot
+# NotRaidBot
 
-## Hello, and welcome to my RaidBot Project.
-
-![image](https://github.com/bdawg1989/NotRaidBot/assets/80122551/258bd7ab-0982-4641-9a3d-41bd192828dc)
-
-![image](https://github.com/bdawg1989/NotPaldeaNET/assets/80122551/cc9e2d9e-eb54-4717-a896-b7afa163e1c3)
-
-![image](https://github.com/bdawg1989/NotRaidBot/assets/80122551/a9aeb158-b6b6-415e-aa76-0e692d1283ce)
-
-# How-To Video
-https://youtu.be/wlFE04oiqGs?si=EDoVRaocGyCapN9n
-
-# __Features__
-## Auto Teleport 
+## __Features__
+### Auto Teleport 
 - Teleports user to the nearest raid den if raid den is lost.
-## Raid Requests
+### Raid Requests
 __Adding Requests__
  - Users can request their own raids using command `ra <seed> <difficulty> <storyprogress>`.
- - I have an online seed finder located here for your users to use: https://genpkm.com/seeds.html
    
 __Removing Request__
 - Users can remove thier raid request by simply typing the `rqc` command.  This removes them from the queue.
@@ -31,19 +19,19 @@ __Disable Requests__
 __Limit Requests__
  - The bot owner can decide how many requests a user can submit in a certain time limit if they wish.
    
-## Full Event Support
+### Full Event Support
 - Users can request an active event they want.  The bot will auto teleport your player to the nearest Event den and proceed with overwriting the seed.
 - Auto Detects Might and Distribution Group ID's to be used. 
-## Mystery Raids
+### Mystery Raids
 - Don't have time to come up with your own raids to add to the list?  Turn on the Mystery Raids function and get a random shiny raid each time!
-## Disable Overworld Spawns
+### Disable Overworld Spawns
 - Tired of your player getting in random battles with overworld pokemon?  Turn this feature on and there will be no more overworld spawns to deal with!
-## Embed Settings
+### Embed Settings
 - Tons of embed settings for the bot owner to choose from.  Customize it your way!
-## Auto Story Progress 
+### Auto Story Progress 
 - StoryProgress will automatically edit the game flags to change the story progress for you per raid!  No need for two bots anymore for "baby" raids and "adult" raids!  
 
-# __Not RaidBot Guide__
+## __Not RaidBot Guide__
 
  - **ActiveRaids**
   - Changing Battle Pokémon - Inside of the collection editor is where all of your requested and auto rotate Pokémon live.  You can change the bots Pokémon by editing the `PartyPK` setting and opening up the editor.  Here, you will put in your desired showdown format for the Pokémon you wish the bot to use for the raid.  The bot will use that Pokémon for that raid only.  Once the raid is done, the original Pokémon that you had first in your party will be used in the next raid unless the next raid also has a PartyPK filled out.
@@ -106,7 +94,7 @@ __Limit Requests__
 - LoggingChannels - if you want to log all the stuff your bot puts in the Log Tab of the program but in a channel, use the `$loghere` command.
 - EchoChannels - These are channels you want your raid embeds to post to.  Use command `$aec` to add the channel to this list.
 
-## __Announcement Settings__
+### __Announcement Settings__
 
 This is helpful if your bot is in several servers and you need to let everyone know that's using it that the bot is online, offline, napping, etc. without having to send out tons of messages yourself.  Just use the `$announce TEXT HERE`command to send out a nice announcement wrapped in a beautiful embed with your choice of thumbnail image and color.
 - AnnouncementThumbnailOption - Set this to your fave pokemon image that i've premade.
@@ -115,7 +103,7 @@ This is helpful if your bot is in several servers and you need to let everyone k
 - RandomAnnouncementThumbnail - set to true if you want it to use random images from my custom thumbnails.  Does not work if you have a custom image you're using.
 - RandomAnnouncementColor - Let the bot choose from the list what color the embed will be this time.
 
-# __In-Game Set Up__
+## __In-Game Set Up__
 - Stand in front of your raid crystal
 - In game Options, make sure of the following:
  -  `Give Nicknames` is Off
@@ -124,7 +112,7 @@ This is helpful if your bot is in several servers and you need to let everyone k
  - Text Speed is `Fast`
 - Start the bot
 
-## __Program Setup__
+### __Program Setup__
 - Enter raid description as you like or leave it blank
 - To post raid embeds in a specific channel use the `aec` command.
 - Paste your raid's seed in the Seed parameter.
@@ -141,26 +129,3 @@ This is helpful if your bot is in several servers and you need to let everyone k
 - **ConfigureRolloverCorrection**
  - If true will only run the rollovercorrection routine for you to figure out your timing
  - Run this when the game is closed.
-
-
-# All of my Projects
-
-## Showdown Alternative Website
-- https://genpkm.com - An online alternative to Showdown that has legality checks and batch trade codes built in to make genning pokemon a breeze.
-
-## Scarlet/Violet RaidBot
-
-- [NotRaidBot](https://github.com/bdawg1989/NotPaldeaNET) - The most advanced RaidBot for Scarlet/Violet available, period.
-  
-## PKHeX - AIO (All-In-One)
-
-- [PKHeX-AIO](https://github.com/bdawg1989/PKHeX-ALL-IN-ONE) - A single .exe with ALM, TeraFinder, and PokeNamer plugins included.  No extra folders and plugin.dll's to keep up with.
-
-## MergeBot - The Ultimate TradeBot
-
-- [Source Code](https://github.com/bdawg1989/MergeBot)
-
-## Grand Oak - SysBot Helper
-- A discord bot that helps with legality issues if someone submits a wrong showdown format.  [Join My Discord To Learn More](https://discord.gg/GtUu9BmCzy)
-  
-![image](https://github.com/bdawg1989/MergeBot/assets/80122551/0842b48e-1b4d-4621-b321-89f478db508b)

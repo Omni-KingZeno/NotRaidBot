@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 
 public class UserRequestManager
 {
@@ -22,11 +22,11 @@ public class UserRequestManager
         if (File.Exists(filePath))
         {
             var json = File.ReadAllText(filePath);
-            userRequests = JsonConvert.DeserializeObject<Dictionary<ulong, UserRequestInfo>>(json) ?? new Dictionary<ulong, UserRequestInfo>();
+            userRequests = JsonConvert.DeserializeObject<Dictionary<ulong, UserRequestInfo>>(json) ?? [];
         }
         else
         {
-            userRequests = new Dictionary<ulong, UserRequestInfo>();
+            userRequests = [];
             Save();
         }
     }

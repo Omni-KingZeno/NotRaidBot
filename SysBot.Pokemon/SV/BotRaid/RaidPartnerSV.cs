@@ -1,21 +1,14 @@
-﻿using PKHeX.Core;
-using System;
+﻿using System;
 using System.Buffers.Binary;
+using PKHeX.Core;
 
 namespace SysBot.Pokemon.SV.BotRaid
 {
-    public sealed class RaidPartnerSV
+    public sealed class RaidPartnerSV(RaidMyStatus info)
     {
-        public string TID7 { get; }
-        public string SID7 { get; }
-        public string TrainerName { get; }
-
-        public RaidPartnerSV(RaidMyStatus info)
-        {
-            TID7 = info.DisplayTID.ToString("D6");
-            SID7 = info.DisplaySID.ToString("D4");
-            TrainerName = info.OT;
-        }
+        public string TID7 { get; } = info.DisplayTID.ToString("D6");
+        public string SID7 { get; } = info.DisplaySID.ToString("D4");
+        public string TrainerName { get; } = info.OT;
     }
 
     public sealed class RaidMyStatus

@@ -1,6 +1,6 @@
-﻿using Discord;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Discord;
 
 namespace SysBot.Base
 {

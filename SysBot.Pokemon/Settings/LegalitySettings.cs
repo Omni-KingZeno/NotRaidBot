@@ -1,6 +1,6 @@
-﻿using PKHeX.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
+using PKHeX.Core;
 
 namespace SysBot.Pokemon;
 
@@ -10,7 +10,7 @@ public class LegalitySettings
 
     private const string Misc = nameof(Misc);
 
-    private string DefaultTrainerName = "genpkm.com";
+    private string DefaultTrainerName = "Ash";
 
     [Category(Generate), Description("Allow users to submit further customization with Batch Editor commands.")]
     public bool AllowBatchCommands { get; set; } = true;
@@ -45,7 +45,7 @@ public class LegalitySettings
         get => DefaultTrainerName;
         set
         {
-                DefaultTrainerName = value;
+            DefaultTrainerName = value;
         }
     }
 

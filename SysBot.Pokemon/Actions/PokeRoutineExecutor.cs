@@ -1,19 +1,15 @@
-﻿using PKHeX.Core;
-using SysBot.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using PKHeX.Core;
+using SysBot.Base;
 
 namespace SysBot.Pokemon
 {
-    public abstract class PokeRoutineExecutor<T> : PokeRoutineExecutorBase where T : PKM, new()
+    public abstract class PokeRoutineExecutor<T>(IConsoleBotManaged<IConsoleConnection, IConsoleConnectionAsync> cfg) : PokeRoutineExecutorBase(cfg) where T : PKM, new()
     {
-        protected PokeRoutineExecutor(IConsoleBotManaged<IConsoleConnection, IConsoleConnectionAsync> cfg) : base(cfg)
-        {
-        }
-
         public abstract Task<T> ReadPokemon(ulong offset, CancellationToken token);
 
         public abstract Task<T> ReadPokemon(ulong offset, int size, CancellationToken token);

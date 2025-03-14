@@ -1,12 +1,12 @@
-﻿using Discord;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
 using PKHeX.Core;
 using SysBot.Pokemon.SV.BotRaid.Helpers;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
 {

@@ -1,4 +1,9 @@
-﻿using Discord;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
@@ -6,11 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using PKHeX.Core;
 using SysBot.Base;
 using SysBot.Pokemon.Discord.Helpers;
-using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
 {
@@ -60,7 +60,7 @@ namespace SysBot.Pokemon.Discord
                        | GatewayIntents.MessageContent
                        | GatewayIntents.GuildMessageReactions
                        | GatewayIntents.GuildMembers,
-                MessageCacheSize = 500, 
+                MessageCacheSize = 500,
                 AlwaysDownloadUsers = true,
                 ConnectionTimeout = 30000,
             });
@@ -157,12 +157,12 @@ namespace SysBot.Pokemon.Discord
                 {
                     await _client.StartAsync();
                     _reconnectAttempts = 0;
-                    Log(new LogMessage(LogSeverity.Info, "Gateway", "Reconnected successfully"));
+                    _ = Log(new LogMessage(LogSeverity.Info, "Gateway", "Reconnected successfully"));
                 }
                 catch (Exception reconnectEx)
                 {
                     _reconnectAttempts++;
-                    Log(new LogMessage(LogSeverity.Error, "Gateway", $"Failed to reconnect: {reconnectEx.Message}"));
+                    _ = Log(new LogMessage(LogSeverity.Error, "Gateway", $"Failed to reconnect: {reconnectEx.Message}"));
                 }
             });
 
@@ -314,15 +314,15 @@ namespace SysBot.Pokemon.Discord
             {
                 if (_client.ConnectionState == ConnectionState.Disconnected)
                 {
-                    Log(new LogMessage(LogSeverity.Warning, "Gateway", "Detected disconnected state, attempting to reconnect..."));
+                    _ = Log(new LogMessage(LogSeverity.Warning, "Gateway", "Detected disconnected state, attempting to reconnect..."));
                     try
                     {
                         await _client.StartAsync();
-                        Log(new LogMessage(LogSeverity.Info, "Gateway", "Reconnected successfully"));
+                        _ = Log(new LogMessage(LogSeverity.Info, "Gateway", "Reconnected successfully"));
                     }
                     catch (Exception ex)
                     {
-                        Log(new LogMessage(LogSeverity.Error, "Gateway", $"Failed to reconnect: {ex.Message}"));
+                        _ = Log(new LogMessage(LogSeverity.Error, "Gateway", $"Failed to reconnect: {ex.Message}"));
                     }
                 }
                 await Task.Delay(60000, token); // Check every minute

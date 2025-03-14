@@ -12,7 +12,7 @@ namespace System.Collections.Concurrent
     public class ConcurrentPool<T> where T : class
     {
         private readonly object _syncLock = new();
-        private readonly List<T> _list = new();
+        private readonly List<T> _list = [];
 
         public void Add(T item)
         {

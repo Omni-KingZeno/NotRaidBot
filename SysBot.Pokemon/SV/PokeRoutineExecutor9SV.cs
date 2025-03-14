@@ -1,21 +1,21 @@
-﻿using PKHeX.Core;
-using RaidCrawler.Core.Structures;
-using SysBot.Base;
-using SysBot.Pokemon.SV.BotRaid;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PKHeX.Core;
+using RaidCrawler.Core.Structures;
+using SysBot.Base;
+using SysBot.Pokemon.SV.BotRaid;
+using static System.Buffers.Binary.BinaryPrimitives;
 using static SysBot.Base.SwitchButton;
 using static SysBot.Pokemon.PokeDataOffsetsSV;
 using static SysBot.Pokemon.SV.BotRaid.Blocks;
-using static System.Buffers.Binary.BinaryPrimitives;
 
 namespace SysBot.Pokemon.SV
 {
-    public abstract class PokeRoutineExecutor9SV : PokeRoutineExecutor<PK9>
+    public abstract class PokeRoutineExecutor9SV(PokeBotState cfg) : PokeRoutineExecutor<PK9>(cfg)
     {
         protected PokeDataOffsetsSV Offsets { get; } = new();
         public ulong returnOfs = 0;
@@ -23,10 +23,6 @@ namespace SysBot.Pokemon.SV
         private ulong KeyBlockAddress = 0;
 
         public ulong BaseBlockKeyPointer;
-
-        protected PokeRoutineExecutor9SV(PokeBotState cfg) : base(cfg)
-        {
-        }
 
         public override async Task<PK9> ReadPokemon(ulong offset, CancellationToken token)
         {
@@ -361,7 +357,7 @@ namespace SysBot.Pokemon.SV
             int nugget = 0, tinyMushroom = 0, bigMushroom = 0, pearl = 0, bigPearl = 0, stardust = 0, starPiece = 0, goldBottleCap = 0, ppUp = 0;
 
             // Initialize Tera Shard counters
-            Dictionary<int, int> teraShards = new();
+            Dictionary<int, int> teraShards = [];
 
             // Count rewards
             foreach ((int, int, int) reward in rewards)
@@ -403,7 +399,7 @@ namespace SysBot.Pokemon.SV
                 }
             }
             // Format and filter rewards based on user preferences
-            List<string> rewardStrings = new();
+            List<string> rewardStrings = [];
             if (rewardsToShow.Contains("Rare Candy") && rare > 0)
             {
                 rewardStrings.Add($"**Rare Candy** x{rare}");

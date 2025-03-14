@@ -1,10 +1,10 @@
-﻿using Discord.WebSocket;
-using PKHeX.Core;
-using SysBot.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
+using Discord.WebSocket;
+using PKHeX.Core;
+using SysBot.Base;
 
 namespace SysBot.Pokemon
 {
@@ -14,12 +14,12 @@ namespace SysBot.Pokemon
         private const string Hosting = nameof(Hosting);
         private const string Counts = nameof(Counts);
         private const string FeatureToggle = nameof(FeatureToggle);
-        
+
         public override string ToString() => "Rotating Raid Settings (Sc/Vi Only)";
         [DisplayName("Active Raid List")]
 
         [Category(Hosting), Description("Your Active Raid List lives here.")]
-        public List<RotatingRaidParameters> ActiveRaids { get; set; } = new();
+        public List<RotatingRaidParameters> ActiveRaids { get; set; } = [];
 
         [DisplayName("Raid Settings")]
         public RotatingRaidSettingsCategory RaidSettings { get; set; } = new RotatingRaidSettingsCategory();
@@ -92,7 +92,7 @@ namespace SysBot.Pokemon
             public int Action1Delay { get; set; } = 5;
 
             [DisplayName("Group ID  (Event Raids Only)")]
-            public int? GroupID { get; set; } = 0;
+            public int GroupID { get; set; } = 0;
 
             [DisplayName("Embed Title")]
             public string Title { get; set; } = string.Empty;
@@ -252,7 +252,7 @@ namespace SysBot.Pokemon
 
             [DisplayName("Users/Roles that can bypass Limit Requests")]
             [Category(Hosting), Description("Dictionary of user and role IDs with names that can bypass request limits.\nCommands: $alb @Role or $alb @User")]
-            public Dictionary<ulong, string> BypassLimitRequests { get; set; } = new Dictionary<ulong, string>();
+            public Dictionary<ulong, string> BypassLimitRequests { get; set; } = [];
 
             [DisplayName("Prevent Battles in Overworld?")]
             [Category(FeatureToggle), Description("Prevent attacks.  When true, Overworld Spawns (Pokémon) are disabled on the next seed injection.  When false, Overworld Spawns (Pokémon) are enabled on the next seed injection.")]
@@ -265,10 +265,6 @@ namespace SysBot.Pokemon
             [DisplayName("Prevent Day Changes?")]
             [Category(FeatureToggle), Description("When enabled, the bot will roll back the time by 5 hours to keep your day from changing.  Be sure that when you start the bot the Switch Time is past 12:01am and before 7:00pm.")]
             public bool EnableTimeRollBack { get; set; } = true;
-
-            [DisplayName("Join Shared Raids Program")]
-            [Category(Hosting), Description("Enable to join the Shared Raids Program.")]
-            public bool JoinSharedRaidsProgram { get; set; } = true;
         }
 
         public class MoveTypeEmojiInfo
@@ -378,8 +374,8 @@ namespace SysBot.Pokemon
 
             [Category(Hosting), Description("Select which rewards to display in the embed.")]
             [DisplayName("Rewards To Show")]
-            public List<string> RewardsToShow { get; set; } = new List<string>
-            {
+            public List<string> RewardsToShow { get; set; } =
+            [
                 "Rare Candy",
                 "Ability Capsule",
                 "Bottle Cap",
@@ -402,7 +398,7 @@ namespace SysBot.Pokemon
                 "Star Piece",
                 "Gold Bottle Cap",
                 "PP Up"
-            };
+            ];
 
             private RequestEmbedTimingOptions _requestEmbedTime = RequestEmbedTimingOptions._3500;
 

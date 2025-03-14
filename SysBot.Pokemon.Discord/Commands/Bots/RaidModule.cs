@@ -1,12 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using Newtonsoft.Json.Linq;
-using PKHeX.Core;
-using SysBot.Base;
-using SysBot.Pokemon.Discord.Helpers;
-using SysBot.Pokemon.SV.BotRaid.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -15,6 +7,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using Newtonsoft.Json.Linq;
+using PKHeX.Core;
+using SysBot.Base;
+using SysBot.Pokemon.Discord.Helpers;
+using SysBot.Pokemon.SV.BotRaid.Helpers;
 using static SysBot.Pokemon.RotatingRaidSettingsSV;
 using static SysBot.Pokemon.SV.BotRaid.RotatingRaidBotSV;
 
@@ -407,7 +407,7 @@ namespace SysBot.Pokemon.Discord.Commands.Bots
                 IsShiny = pk.IsShiny,
                 AddedByRACommand = false,
                 Title = $"{(Species)pk.Species}",
-                GroupID = raidDeliveryGroupID != -1 ? raidDeliveryGroupID : null
+                GroupID = raidDeliveryGroupID != -1 ? raidDeliveryGroupID : 0,
             };
             // Check if Species is Ditto and set PartyPK to Showdown template
             if (newparam.Species == Species.Ditto)
@@ -559,9 +559,9 @@ namespace SysBot.Pokemon.Discord.Commands.Bots
                 await ReplyAsync($"For 7★ raids, please specify the species name. Available species: {availableSpecies}").ConfigureAwait(false);
                 return;
             }
-            if (level < 1 || level > 7) 
+            if (level < 1 || level > 7)
             {
-                await ReplyAsync("Invalid raid level. Please enter a level between 1 and 7.").ConfigureAwait(false); 
+                await ReplyAsync("Invalid raid level. Please enter a level between 1 and 7.").ConfigureAwait(false);
                 return;
             }
             var gameProgress = ConvertToGameProgress(storyProgressLevel);
@@ -756,7 +756,7 @@ namespace SysBot.Pokemon.Discord.Commands.Bots
                 5 => "5☆ Unlocked Progress",
                 4 => "4☆ Unlocked Progress",
                 3 => "3☆ Unlocked Progress",
-                _ => throw new ArgumentException("Invalid Story Progress Level... where are you getting your seeds?\nUse <https://genpkm.com/seeds.html> to get them."),
+                _ => throw new ArgumentException("Invalid Story Progress Level..."),
             };
         }
 

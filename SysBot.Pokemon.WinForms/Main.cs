@@ -1,7 +1,4 @@
-﻿using PKHeX.Core;
-using SysBot.Base;
-using SysBot.Pokemon.SV.BotRaid.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -10,6 +7,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PKHeX.Core;
+using SysBot.Base;
+using SysBot.Pokemon.SV.BotRaid.Helpers;
 
 namespace SysBot.Pokemon.WinForms
 {
@@ -35,7 +35,6 @@ namespace SysBot.Pokemon.WinForms
         {
             if (IsUpdating)
                 return;
-            string discordName = string.Empty;
 
             // Update checker
             UpdateChecker updateChecker = new();
@@ -62,9 +61,9 @@ namespace SysBot.Pokemon.WinForms
             }
 
             LoadControls();
-            Text = $"{(string.IsNullOrEmpty(Config.Hub.BotName) ? "NotPaldea.net" : Config.Hub.BotName)} {SVRaidBot.Version} ({Config.Mode})";
-            Task.Run(BotMonitor);
-            InitUtil.InitializeStubs(Config.Mode);
+            Text = $"{(string.IsNullOrEmpty(Config.Hub.BotName) ? "NotRaidBot" : Config.Hub.BotName)} {SVRaidBot.Version}";
+            await Task.Run(BotMonitor);
+            InitUtil.InitializeStubs(ProgramMode.SV);
         }
 
         private void TC_Main_SelectedIndexChanged(object sender, EventArgs e)
@@ -289,7 +288,7 @@ namespace SysBot.Pokemon.WinForms
         }
 
         private void RefreshMap_Click(object sender, EventArgs e)
-        { 
+        {
             SaveCurrentConfig();
             LogUtil.LogInfo("Sending RefreshMap command to all bots.", "Refresh Map");
             SendAll(BotControlCommand.RefreshMap);
@@ -357,7 +356,7 @@ namespace SysBot.Pokemon.WinForms
             PokeRoutineExecutorBase newBot;
             try
             {
-                Console.WriteLine($"Current Mode ({Config.Mode}) does not support this type of bot ({cfg.CurrentRoutineType}).");
+                Console.WriteLine($"NotRaidBot does not support this type of bot ({cfg.CurrentRoutineType}).");
                 newBot = RunningEnvironment.CreateBotFromConfig(cfg);
             }
             catch
@@ -435,7 +434,7 @@ namespace SysBot.Pokemon.WinForms
         {
             if (sender is ComboBox comboBox)
             {
-                string selectedTheme = comboBox.SelectedItem.ToString();
+                string selectedTheme = comboBox.SelectedItem.ToString() ?? "Light Mode";
                 Config.Hub.ThemeOption = selectedTheme;  // Save the selected theme to the config
                 SaveCurrentConfig();  // Save the config to file
 
@@ -482,6 +481,7 @@ namespace SysBot.Pokemon.WinForms
             Color RefreshMap = Color.FromArgb(245, 245, 220);// Refresh Map Button
             // Set the background color of the form
             BackColor = ElegantWhite;
+            ButtonPanel.BackColor = ElegantWhite;
 
             // Set the foreground color of the form (text color)
             ForeColor = DeepBlue;
@@ -559,6 +559,7 @@ namespace SysBot.Pokemon.WinForms
 
             // Set the background color of the form
             BackColor = MidnightBlack;
+            ButtonPanel.BackColor = MidnightBlack;
 
             // Set the foreground color of the form (text color)
             ForeColor = GhostlyGrey;
@@ -633,9 +634,7 @@ namespace SysBot.Pokemon.WinForms
             Color RefreshMap = Color.FromArgb(245, 245, 220);// Refresh Map Button
             // Set the background color of the form
             BackColor = GentleGrey;
-
-            // Set the foreground color of the form (text color)
-            ForeColor = DarkBlue;
+            ButtonPanel.BackColor = GentleGrey;
 
             // Set the background color of the tab control
             TC_Main.BackColor = SoftBlue;
@@ -709,6 +708,7 @@ namespace SysBot.Pokemon.WinForms
             Color RefreshMap = Color.FromArgb(245, 245, 220);// Refresh Map Button
             // Set the background color of the form
             BackColor = SleekGrey;
+            ButtonPanel.BackColor = SleekGrey;
 
             // Set the foreground color of the form (text color)
             ForeColor = SoftWhite;
@@ -784,6 +784,7 @@ namespace SysBot.Pokemon.WinForms
             Color RefreshMap = Color.FromArgb(245, 245, 220);// Refresh Map Button
             // Set the background color of the form
             BackColor = DarkGrey;
+            ButtonPanel.BackColor = DarkGrey;
 
             // Set the foreground color of the form (text color)
             ForeColor = SoftWhite;

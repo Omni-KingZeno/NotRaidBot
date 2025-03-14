@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <Platforms>x64</Platforms>
     <StartupObject>SysBot.Pokemon.ConsoleApp.Program</StartupObject>
-    <Configurations>Debug;Release;sysbottest</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>

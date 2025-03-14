@@ -1,6 +1,6 @@
-﻿using Discord.WebSocket;
+﻿using System.Threading.Tasks;
+using Discord.WebSocket;
 using SysBot.Base;
-using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
 {

@@ -1,5 +1,5 @@
-﻿using PKHeX.Core;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using PKHeX.Core;
 
 namespace SysBot.Pokemon
 {
@@ -7,16 +7,11 @@ namespace SysBot.Pokemon
     /// Centralizes logic for Raid bot coordination.
     /// </summary>
     /// <typeparam name="T">Type of <see cref="PKM"/> to distribute.</typeparam>
-    public class PokeRaidHub<T> where T : PKM, new()
+    public class PokeRaidHub<T>(PokeRaidHubConfig config) where T : PKM, new()
     {
         public RotatingRaidSettingsSV RotatingRaidSV { get; set; }
 
-        public PokeRaidHub(PokeRaidHubConfig config)
-        {
-            Config = config;
-        }
-
-        public readonly PokeRaidHubConfig Config;
+        public readonly PokeRaidHubConfig Config = config;
 
         /// <summary> Raid Bots only, used to delegate multi-player tasks </summary>
         public readonly ConcurrentPool<PokeRoutineExecutorBase> Bots = new();

@@ -1,10 +1,10 @@
-using Discord;
-using Discord.Commands;
-using PKHeX.Core;
 using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using PKHeX.Core;
 
 namespace SysBot.Pokemon.Discord
 {

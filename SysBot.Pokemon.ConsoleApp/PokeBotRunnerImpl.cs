@@ -1,7 +1,7 @@
-﻿using PKHeX.Core;
-using SysBot.Pokemon.Discord;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using PKHeX.Core;
+using SysBot.Pokemon.Discord;
 
 namespace SysBot.Pokemon.ConsoleApp
 {

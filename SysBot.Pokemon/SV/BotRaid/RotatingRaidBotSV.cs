@@ -1,10 +1,6 @@
-using Discord;
-using Newtonsoft.Json;
-using PKHeX.Core;
-using RaidCrawler.Core.Structures;
-using SysBot.Base;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,32 +8,28 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
-using AnimatedGif;
-using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using AnimatedGif;
+using Discord;
+using Newtonsoft.Json;
+using PKHeX.Core;
+using RaidCrawler.Core.Structures;
+using SysBot.Base;
 using static SysBot.Base.SwitchButton;
 using static SysBot.Pokemon.RotatingRaidSettingsSV;
 using static SysBot.Pokemon.SV.BotRaid.Blocks;
-using System.Text.RegularExpressions;
-using System.Security.Cryptography;
 
 namespace SysBot.Pokemon.SV.BotRaid
 {
-    public class RotatingRaidBotSV : PokeRoutineExecutor9SV
+    public class RotatingRaidBotSV(PokeBotState cfg, PokeRaidHub<PK9> hub) : PokeRoutineExecutor9SV(cfg)
     {
-        private readonly PokeRaidHub<PK9> Hub;
-        private readonly RotatingRaidSettingsSV Settings;
+        private readonly PokeRaidHub<PK9> Hub = hub;
+        private readonly RotatingRaidSettingsSV Settings = hub.Config.RotatingRaidSV;
         private RemoteControlAccessList RaiderBanList => Settings.RaiderBanList;
         public static Dictionary<string, List<(int GroupID, int Index, string DenIdentifier)>> SpeciesToGroupIDMap =
         new(StringComparer.OrdinalIgnoreCase);
-        private static readonly HttpClient httpClient = new HttpClient();
-
-        public RotatingRaidBotSV(PokeBotState cfg, PokeRaidHub<PK9> hub) : base(cfg)
-        {
-            Hub = hub;
-            Settings = hub.Config.RotatingRaidSV;
-        }
+        private static readonly HttpClient httpClient = new();
 
         public class PlayerInfo
         {
@@ -56,7 +48,6 @@ namespace SysBot.Pokemon.SV.BotRaid
         private int EventProgress;
         private int EmptyRaid = 0;
         private int LostRaid = 0;
-        private readonly int FieldID = 0;
         private bool firstRun = true;
         public static int RotationCount { get; set; }
         private ulong TodaySeed;
@@ -77,10 +68,6 @@ namespace SysBot.Pokemon.SV.BotRaid
         private static DateTime TimeForRollBackCheck = DateTime.Now;
         private string denHexSeed;
         private int seedMismatchCount = 0;
-        private readonly bool indicesInitialized = false;
-        private static readonly int KitakamiDensCount = 0;
-        private static readonly int BlueberryDensCount = 0;
-        private readonly int InvalidDeliveryGroupCount = 0;
         private bool shouldRefreshMap = false;
 
         public override async Task MainLoop(CancellationToken token)
@@ -168,7 +155,6 @@ namespace SysBot.Pokemon.SV.BotRaid
                 File.WriteAllText(filePath, json);
             }
         }
-
         private void GenerateSeedsFromFile()
         {
             var folder = "raidfilessv";
@@ -355,7 +341,7 @@ namespace SysBot.Pokemon.SV.BotRaid
                                 return;
                             }
 
-                            isRecoveringFromReboot = false; 
+                            isRecoveringFromReboot = false;
                             Log("Successfully recovered online connectivity after reboot.");
                         }
 
@@ -514,8 +500,8 @@ namespace SysBot.Pokemon.SV.BotRaid
 
         private async Task LocateSeedIndex(CancellationToken token)
         {
-            int upperBound = KitakamiDensCount == 25 ? 94 : 95;
-            int startIndex = KitakamiDensCount == 25 ? 94 : 95;
+            int upperBound = 95;
+            int startIndex = 95;
 
             var data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP, 2304, token).ConfigureAwait(false);
             for (int i = 0; i < 69; i++)  // Paldea Raids
@@ -614,7 +600,6 @@ namespace SysBot.Pokemon.SV.BotRaid
         }
 
         private bool isRecoveringFromReboot = false;
-
         private async Task PerformRebootAndReset(CancellationToken t)
         {
             EmbedBuilder embed = new()
@@ -622,7 +607,7 @@ namespace SysBot.Pokemon.SV.BotRaid
                 Title = "Bot Reset",
                 Description = "The bot encountered an issue and is currently resetting. Please stand by.",
                 Color = Discord.Color.Red,
-                ThumbnailUrl = "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/x.png"
+                ThumbnailUrl = "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/X.png"
             };
             EchoUtil.RaidEmbed(null, "", embed);
 
@@ -756,7 +741,6 @@ namespace SysBot.Pokemon.SV.BotRaid
             if (dupe)
             {
                 // We read bad data, reset game to end early and recover.
-                var msg = "Oops! Something went wrong, resetting to recover.";
                 bool success = false;
                 for (int attempt = 1; attempt <= 3; attempt++)
                 {
@@ -1271,9 +1255,9 @@ namespace SysBot.Pokemon.SV.BotRaid
             }
 
             int raidDeliveryGroupID = 0;
-            List<string> emptyRewardsToShow = new List<string>();
+            List<string> emptyRewardsToShow = [];
             bool defaultMoveTypeEmojis = false;
-            List<MoveTypeEmojiInfo> emptyCustomTypeEmojis = new List<MoveTypeEmojiInfo>();
+            List<MoveTypeEmojiInfo> emptyCustomTypeEmojis = [];
             int defaultQueuePosition = 0;
             bool defaultIsEvent = false;
             (PK9 pk, Embed embed) = RaidInfoCommand(seedValue, contentType, map, (int)gameProgress, raidDeliveryGroupID,
@@ -1433,7 +1417,7 @@ namespace SysBot.Pokemon.SV.BotRaid
 
         private List<long> CalculateDirectPointer(int index)
         {
-            int blueberrySubtractValue = KitakamiDensCount == 25 ? 94 : 95;
+            int blueberrySubtractValue = 95;
 
             if (IsKitakami)
             {
@@ -1460,7 +1444,7 @@ namespace SysBot.Pokemon.SV.BotRaid
 
         private List<long> DeterminePointer(int index)
         {
-            int blueberrySubtractValue = KitakamiDensCount == 25 ? 93 : 94;
+            int blueberrySubtractValue = 94;
 
             if (index < 69)
             {
@@ -1956,7 +1940,6 @@ namespace SysBot.Pokemon.SV.BotRaid
             {
                 msg = $"{banResultCFW!.Name} was found in the host's ban list.\n{banResultCFW.Comment}";
                 Log(msg);
-                await CurrentRaidInfo(null, "", false, true, false, false, null, false, token).ConfigureAwait(false);
                 await EnqueueEmbed(null, msg, false, true, false, false, token).ConfigureAwait(false);
                 return true;
             }
@@ -1966,7 +1949,7 @@ namespace SysBot.Pokemon.SV.BotRaid
         private async Task<(bool, List<(ulong, RaidMyStatus)>)> ReadTrainers(CancellationToken token)
         {
             if (!await IsConnectedToLobby(token))
-                return (false, new List<(ulong, RaidMyStatus)>());
+                return (false, []);
             await EnqueueEmbed(null, "", false, false, false, false, token).ConfigureAwait(false);
 
             List<(ulong, RaidMyStatus)> lobbyTrainers = [];
@@ -2044,7 +2027,6 @@ namespace SysBot.Pokemon.SV.BotRaid
                     if (full)
                     {
                         List<string> trainerNames = lobbyTrainers.Select(t => t.Item2.OT).ToList();
-                        await CurrentRaidInfo(trainerNames, "", false, false, false, false, null, true, token).ConfigureAwait(false);
                     }
 
                     if (full || DateTime.Now >= endTime)
@@ -2280,14 +2262,14 @@ namespace SysBot.Pokemon.SV.BotRaid
         private static readonly char[] separator = [','];
         private static readonly char[] separatorArray = ['-'];
 
-        private string GetTypeAdvantage(string teraType)
+        private string GetTypeAdvantage(string? teraType)
         {
-            // Check if the type exists in the dictionary and return the corresponding advantage
-            if (TypeAdvantages.TryGetValue(teraType.ToLower(), out string advantage))
+            if (string.IsNullOrWhiteSpace(teraType))
             {
-                return advantage;
+                return "Unknown Type";
             }
-            return "Unknown Type";  // Return "Unknown Type" if the type doesn't exist in our dictionary
+
+            return TypeAdvantages.TryGetValue(teraType.ToLower(), out string? advantage) ? advantage : "Unknown Type";
         }
 
         private async Task<byte[]?> CaptureGifScreenshotsAsync(CancellationToken token)
@@ -2475,10 +2457,6 @@ namespace SysBot.Pokemon.SV.BotRaid
                 }
             }
 
-            string disclaimer = Settings.ActiveRaids.Count > 1
-                                ? $"notpaldea.net"
-                                : "";
-
             var turl = string.Empty;
             var form = string.Empty;
 
@@ -2528,9 +2506,6 @@ namespace SysBot.Pokemon.SV.BotRaid
                 turl = RaidExtensions<PK9>.PokeImg(pk, false, false);
             }
 
-            if (Settings.ActiveRaids[RotationCount].Species is 0)
-                turl = "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/combat.png";
-
             // Fetch the dominant color from the image only AFTER turl is assigned
             (int R, int G, int B) dominantColor = Task.Run(() => RaidExtensions<PK9>.GetDominantColorAsync(turl)).Result;
 
@@ -2558,13 +2533,10 @@ namespace SysBot.Pokemon.SV.BotRaid
                 ImageUrl = imageBytes != null ? $"attachment://{fileName}" : null, // Set ImageUrl based on imageBytes
             };
 
-            if (!raidstart && !upnext && code != "Free For All")
-                await CurrentRaidInfo(null, code, false, false, false, false, turl, false, token).ConfigureAwait(false);
-
             // Only include footer if not posting 'upnext' embed with the 'Preparing Raid' title
             if (!(upnext && Settings.RaidSettings.TotalRaidsToHost == 0))
             {
-                string programIconUrl = $"https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/icon4.png";
+                string programIconUrl = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/pawmichu.png";
                 int raidsInRotationCount = Hub.Config.RotatingRaidSV.ActiveRaids.Count(r => !r.AddedByRACommand);
                 // Calculate uptime
                 TimeSpan uptime = DateTime.Now - StartTime;
@@ -2593,7 +2565,7 @@ namespace SysBot.Pokemon.SV.BotRaid
                 uptimeFormatted = uptimeFormatted.Trim();
                 embed.WithFooter(new EmbedFooterBuilder()
                 {
-                    Text = $"Completed Raids: {RaidCount} (W: {WinCount} | L: {LossCount})\nActiveRaids: {raidsInRotationCount} | Uptime: {uptimeFormatted}\n" + disclaimer,
+                    Text = $"Completed Raids: {RaidCount} (W: {WinCount} | L: {LossCount})\nActiveRaids: {raidsInRotationCount} | Uptime: {uptimeFormatted}\n",
                     IconUrl = programIconUrl
                 });
             }
@@ -2601,7 +2573,7 @@ namespace SysBot.Pokemon.SV.BotRaid
             // Prepare the tera icon URL
             string teraType = RaidEmbedInfoHelpers.RaidSpeciesTeraType.ToLower();
             string folderName = Settings.EmbedToggles.SelectedTeraIconType == TeraIconType.Icon1 ? "icon1" : "icon2"; // Add more conditions for more icon types
-            string teraIconUrl = $"https://raw.githubusercontent.com/bdawg1989/sprites/main/teraicons/{folderName}/{teraType}.png";
+            string teraIconUrl = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/teraicons/{folderName}/{teraType}.png";
 
             // Only include author (header) if not posting 'upnext' embed with the 'Preparing Raid' title
             if (!(upnext && Settings.RaidSettings.TotalRaidsToHost == 0))
@@ -2695,89 +2667,6 @@ namespace SysBot.Pokemon.SV.BotRaid
             EchoUtil.RaidEmbed(imageBytes, fileName, embed);
         }
 
-        private static string CleanEmojiStrings(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return input;
-            return Regex.Replace(input, @"<:[a-zA-Z0-9_]+:[0-9]+>", "").Trim();
-        }
-
-        private const string PUBLIC_KEY = @"-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArFbz7xXyQtO0j5JfcVW4
-lcIO3/+kL0GuNN4GgdZHNLWu6OX4Sv0BypvMOqdOTrGMMj+/v/1tRWamUh1qRSN+
-lmRsNLxj5A6kdwZk+UIU2LC6X3Y192FyVAvV/nYFgvdoyUzF1agvaTP7C7g8F3vH
-/zbGZdaH/4ZqKfBTU+NebCASaL+z+b7oIyl3j0RKdBAm5MJjYhSwj6j+1DpFbNgj
-ALwkMx63fBR0pKs+jJ8DcFrcJR50aVv1jfIAQpPIK5G6Dk/4hmV12Hdu5sSGLl40
-5AlAy18QKMi3y3vyvJ4wZnuY+gpsaTsuTlSau6FxpVzxosvv4kh9x1HVaoX2iGSh
-7QIDAQAB
------END PUBLIC KEY-----";
-
-        private static string? EncryptRaidCode(string code)
-        {
-            try
-            {
-                using RSA rsa = RSA.Create();
-                rsa.ImportFromPem(PUBLIC_KEY);
-                byte[] dataToEncrypt = Encoding.UTF8.GetBytes(code);
-                byte[] encryptedData = rsa.Encrypt(dataToEncrypt, RSAEncryptionPadding.Pkcs1);
-                return Convert.ToBase64String(encryptedData);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Encryption error: {ex.Message}");
-                return null;
-            }
-        }
-
-        private async Task CurrentRaidInfo(List<string>? names, string code, bool hatTrick, bool disband, bool upnext, bool raidstart, string? imageUrl, bool lobbyFull, CancellationToken token)
-        {
-            if (!Settings.RaidSettings.JoinSharedRaidsProgram)
-                return;
-
-            string? encryptedCode = null;
-            if (!string.IsNullOrEmpty(code) && code != "FREE FOR ALL" && code != "IJ0LTU")
-            {
-                encryptedCode = EncryptRaidCode(code);
-            }
-
-            var raidInfo = new
-            {
-                RaidEmbedTitle = CleanEmojiStrings(RaidEmbedInfoHelpers.RaidEmbedTitle),
-                RaidSpecies = RaidEmbedInfoHelpers.RaidSpecies.ToString(),
-                RaidEmbedInfoHelpers.RaidSpeciesForm,
-                RaidSpeciesGender = CleanEmojiStrings(RaidEmbedInfoHelpers.RaidSpeciesGender),
-                RaidEmbedInfoHelpers.RaidLevel,
-                RaidEmbedInfoHelpers.RaidSpeciesIVs,
-                RaidEmbedInfoHelpers.RaidSpeciesAbility,
-                RaidEmbedInfoHelpers.RaidSpeciesNature,
-                RaidEmbedInfoHelpers.RaidSpeciesTeraType,
-                Moves = CleanEmojiStrings(RaidEmbedInfoHelpers.Moves),
-                ExtraMoves = CleanEmojiStrings(RaidEmbedInfoHelpers.ExtraMoves),
-                RaidEmbedInfoHelpers.ScaleText,
-                SpecialRewards = CleanEmojiStrings(RaidEmbedInfoHelpers.SpecialRewards),
-                RaidEmbedInfoHelpers.ScaleNumber,
-                Names = names,
-                Code_encrypted = encryptedCode,
-                HatTrick = hatTrick,
-                Disband = disband,
-                UpNext = upnext,
-                RaidStart = raidstart,
-                ImageUrl = imageUrl,
-                LobbyFull = lobbyFull
-            };
-
-            try
-            {
-                var json = JsonConvert.SerializeObject(raidInfo, Formatting.Indented);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                string raidinfo = Encoding.UTF8.GetString(Convert.FromBase64String("aHR0cHM6Ly9nZW5wa20uY29tL3JhaWRzL3JhaWRfYXBpLnBocA=="));
-                var response = await httpClient.PostAsync(raidinfo, content, token);
-            }
-            catch
-            {
-            }
-        }
-
         private async Task<bool> ConnectToOnline(PokeRaidHubConfig config, CancellationToken token)
         {
             int attemptCount = 0;
@@ -2809,7 +2698,7 @@ ALwkMx63fBR0pKs+jJ8DcFrcJR50aVv1jfIAQpPIK5G6Dk/4hmV12Hdu5sSGLl40
                             Title = "Experiencing Technical Difficulties",
                             Description = "The bot is experiencing issues connecting online. Please stand by as we try to resolve the issue.",
                             Color = Discord.Color.Red,
-                            ThumbnailUrl = "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/x.png"
+                            ThumbnailUrl = "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/X.png"
                         };
                         EchoUtil.RaidEmbed(null, "", embed);
                         // Waiting process
@@ -2960,9 +2849,9 @@ ALwkMx63fBR0pKs+jJ8DcFrcJR50aVv1jfIAQpPIK5G6Dk/4hmV12Hdu5sSGLl40
                 else // When Settings.DisableOverworldSpawns is false, ensure Overworld spawns are enabled
                 {
                     Log("Settings indicate Overworld Spawns should be enabled. Checking current state.");
-                    Log($"Current Overworld Spawns state: {currentSpawnsEnabled.Value}");
+                    Log($"Current Overworld Spawns state: {currentSpawnsEnabled?.ToString() ?? "Unknown"}");
 
-                    if (!currentSpawnsEnabled.Value)
+                    if (currentSpawnsEnabled == null || !currentSpawnsEnabled.Value)
                     {
                         Log("Overworld Spawns are disabled, attempting to enable.");
                         await WriteBlock(true, RaidDataBlocks.KWildSpawnsEnabled, token, currentSpawnsEnabled);
@@ -3071,14 +2960,16 @@ ALwkMx63fBR0pKs+jJ8DcFrcJR50aVv1jfIAQpPIK5G6Dk/4hmV12Hdu5sSGLl40
         private async Task<(float, float, float)> GetPlayersLocation(CancellationToken token)
         {
             // Read the data block (automatically handles encryption)
-            var data = await ReadBlock(RaidDataBlocks.KCoordinates, token) as byte[];
+            if (await ReadBlock(RaidDataBlocks.KCoordinates, token) is byte[] data)
+            {
+                // Extract coordinates
+                float x = BitConverter.ToSingle(data, 0);
+                float y = BitConverter.ToSingle(data, 4);
+                float z = BitConverter.ToSingle(data, 8);
 
-            // Extract coordinates
-            float x = BitConverter.ToSingle(data, 0);
-            float y = BitConverter.ToSingle(data, 4);
-            float z = BitConverter.ToSingle(data, 8);
-
-            return (x, y, z);
+                return (x, y, z);
+            }
+            return (0, 0, 0);
         }
 
         public async Task TeleportToDen(float x, float y, float z, CancellationToken token)
@@ -3616,7 +3507,7 @@ ALwkMx63fBR0pKs+jJ8DcFrcJR50aVv1jfIAQpPIK5G6Dk/4hmV12Hdu5sSGLl40
                         }
 
                         // Encounter Info
-                        int raid_delivery_group_id = (int)Settings.ActiveRaids[a].GroupID;
+                        int raid_delivery_group_id = Settings.ActiveRaids[a].GroupID;
                         var encounter = allRaids[i].GetTeraEncounter(container, allRaids[i].IsEvent ? 3 : StoryProgress, raid_delivery_group_id);
                         if (encounter != null)
                         {
@@ -3736,8 +3627,8 @@ ALwkMx63fBR0pKs+jJ8DcFrcJR50aVv1jfIAQpPIK5G6Dk/4hmV12Hdu5sSGLl40
 
         private async Task FindSeedIndexInRaids(uint denHexSeedUInt, CancellationToken token)
         {
-            var upperBound = KitakamiDensCount == 25 ? 94 : 95;
-            var startIndex = KitakamiDensCount == 25 ? 94 : 95;
+            var upperBound = 95;
+            var startIndex = 95;
 
             // Search in Paldea region
             var dataP = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP, 2304, token).ConfigureAwait(false);
@@ -3888,7 +3779,7 @@ ALwkMx63fBR0pKs+jJ8DcFrcJR50aVv1jfIAQpPIK5G6Dk/4hmV12Hdu5sSGLl40
                 specialRewards = "No valid rewards to display";
             }
             var teraTypeLower = strings.Types[teraType].ToLower();
-            var teraIconUrl = $"https://raw.githubusercontent.com/bdawg1989/sprites/main/teraicons/icon1/{teraTypeLower}.png";
+            var teraIconUrl = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/teraicons/icon1/{teraTypeLower}.png";
             var disclaimer = $"Current Position: {queuePosition}";
             var titlePrefix = raid.IsShiny ? "Shiny " : "";
             var formName = ShowdownParsing.GetStringFromForm(pk.Form, strings, pk.Species, pk.Context);
@@ -3908,7 +3799,7 @@ ALwkMx63fBR0pKs+jJ8DcFrcJR50aVv1jfIAQpPIK5G6Dk/4hmV12Hdu5sSGLl40
                 x.Value = $"{Format.Bold($"TeraType:")} {strings.Types[teraType]} \n" +
                           $"{Format.Bold($"Level:")} {level}\n" +
                           $"{Format.Bold($"Ability:")} {strings.Ability[pk.Ability]}\n" +
-                          $"{Format.Bold("Nature:")} {(Nature)pk.Nature}\n" +
+                          $"{Format.Bold("Nature:")} {pk.Nature}\n" +
                           $"{Format.Bold("IVs:")} {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}\n" +
                           $"{Format.Bold($"Scale:")} {PokeSizeDetailedUtil.GetSizeRating(pk.Scale)}";
                 x.IsInline = true;
@@ -3932,7 +3823,7 @@ ALwkMx63fBR0pKs+jJ8DcFrcJR50aVv1jfIAQpPIK5G6Dk/4hmV12Hdu5sSGLl40
                 embed.AddField("**__Special Rewards__**", "No special rewards available", true);
             }
 
-            var programIconUrl = "https://raw.githubusercontent.com/bdawg1989/sprites/main/imgs/icon4.png";
+            var programIconUrl = "https://raw.githubusercontent.com/BakaKaito/HomeImages/Home3.0/Misc/pawmichu.png";
             embed.WithFooter(new EmbedFooterBuilder()
             {
                 Text = $"" + disclaimer,

@@ -22,7 +22,7 @@ namespace SysBot.Pokemon
         /// Don't mutate this list; use <see cref="AddIfNew"/> and <see cref="RemoveAll"/>.
         /// This is public for serialization purposes.
         /// </summary>
-        public List<RemoteControlAccess> List { get; set; } = new();
+        public List<RemoteControlAccess> List { get; set; } = [];
 
         /// <summary>
         /// Allows Bot-Specific role lists to permit anyone to use the bot if there are no roles specified.

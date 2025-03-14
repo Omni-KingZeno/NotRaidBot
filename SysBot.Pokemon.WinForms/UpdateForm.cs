@@ -196,7 +196,7 @@ namespace SysBot.Pokemon.WinForms
                 File.WriteAllText(batchPath, batchContent);
 
                 // Start the update batch file
-                ProcessStartInfo startInfo = new ProcessStartInfo
+                ProcessStartInfo startInfo = new()
                 {
                     FileName = batchPath,
                     CreateNoWindow = true,

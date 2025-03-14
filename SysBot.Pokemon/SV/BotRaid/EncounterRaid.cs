@@ -1,13 +1,11 @@
-﻿using PKHeX.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using PKHeX.Core;
 
 namespace TeraFinder.Core;
 
-public class EncounterRaid9 : IEncounterable, IEncounterConvertible<PK9>, ITeraRaid9, IMoveset, IFlawlessIVCount, IFixedGender
+public class EncounterRaid9(ITeraRaid9 encounter) : IEncounterable, IEncounterConvertible<PK9>, ITeraRaid9, IMoveset, IFlawlessIVCount, IFixedGender
 {
-    protected ITeraRaid9 Encounter { get; set; } = null!;
-
-    public EncounterRaid9(ITeraRaid9 encounter) => Encounter = encounter;
+    protected ITeraRaid9 Encounter { get; set; } = encounter;
 
     public bool IsDistribution => Encounter.IsDistribution;
     public byte Index => Encounter.Index;
